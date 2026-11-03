@@ -1,0 +1,42 @@
+$accent: #c1f45b;
+$muted: #a2afa5;
+
+.page { min-height: 100svh; background: #111617; color: #f5f7f4; font-family: Arial, Helvetica, sans-serif;
+  *, *::before, *::after { box-sizing: border-box; }
+  a { text-decoration: none; }
+  a:focus-visible, summary:focus-visible { outline: 2px solid $accent; outline-offset: 5px; }
+}
+.main { max-width: 1120px; padding: 28px 40px 36px; margin: auto; }
+.back { display: inline-flex; align-items: center; gap: 8px; color: $accent; font-size: 12px; padding: 8px 0; svg { font-size: 17px; } &:hover { text-decoration: underline; } }
+.heading { margin: 26px 0; > span { font-size: 9px; letter-spacing: 2px; color: $accent; font-weight: 700; } h1 { font-size: clamp(24px, 4vw, 34px); letter-spacing: -1px; line-height: 1.3; margin: 12px 0; overflow-wrap: anywhere; span { color: $muted; font-weight: 400; } } p { color: $muted; font-size: 13px; line-height: 1.7; } }
+.scoreboard { padding: 28px; border: 1px solid #3b5031; border-radius: 14px; background: radial-gradient(ellipse at top, #2f4226, #19241e 70%); text-align: center; > time { color: #c6d2c0; font-size: 12px; line-height: 1.7; } }
+.badge { display: inline-block; border: 1px solid #9da7aa40; border-radius: 20px; padding: 7px 13px; color: #cfdbc9; font-size: 10px; }
+.live { color: $accent; border-color: #c1f45b60; }
+.scoreRow { display: grid; grid-template-columns: minmax(0, 1fr) minmax(100px, .6fr) minmax(0, 1fr); gap: 14px; align-items: center; max-width: 700px; margin: 28px auto; }
+.team { display: flex; flex-direction: column; align-items: center; gap: 12px; > span { width: 60px; height: 60px; img { width: 56px; height: 56px; } svg { font-size: 44px; } } strong { font-size: 18px; line-height: 1.4; overflow-wrap: anywhere; } small { color: $muted; font-size: 10px; } }
+.score { display: flex; flex-direction: column; gap: 12px; strong { color: $accent; font-size: clamp(26px, 5vw, 48px); font-variant-numeric: tabular-nums; white-space: nowrap; } span { color: #d2dec8; font-size: 11px; line-height: 1.5; } }
+.venue { display: flex; align-items: center; justify-content: center; gap: 6px; color: $muted; font-size: 11px; line-height: 1.7; svg { flex-shrink: 0; font-size: 16px; } }
+.periods { display: flex; flex-wrap: wrap; justify-content: center; gap: 20px; border-top: 1px solid #3a4836; padding-top: 20px; margin: 22px 0 0; dt { color: $muted; font-size: 10px; } dd { margin: 8px 0 0; font-size: 14px; font-variant-numeric: tabular-nums; } }
+.sections { display: flex; gap: 24px; overflow-x: auto; border-bottom: 1px solid #303c34; margin: 18px 0 24px; a { padding: 17px 0; color: #c4d0bf; font-size: 12px; white-space: nowrap; &:hover { color: $accent; } } }
+.columns { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr)); gap: 20px; }
+.panel { min-width: 0; padding: 24px; margin-bottom: 20px; scroll-margin-top: 24px; border: 1px solid #303c34; border-radius: 10px; background: #19201e; h2 { font-size: 18px; margin: 0 0 22px; letter-spacing: -.4px; small { float: right; font-size: 11px; color: $accent; font-weight: 400; } } h3 { font-size: 14px; margin: 24px 0 14px; } }
+.facts { margin: 0; > div { display: flex; justify-content: space-between; gap: 18px; padding: 11px 0; border-bottom: 1px solid #2a352e; &:last-child { border: 0; } } dt { font-size: 11px; color: $muted; } dd { font-size: 12px; text-align: right; margin: 0; line-height: 1.5; overflow-wrap: anywhere; } }
+.odds { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; margin: 0 0 20px; > div { background: #c1f45b08; border: 1px solid #465439; border-radius: 8px; padding: 18px 4px; text-align: center; } dt { color: #bccab0; font-size: 10px; } dd { margin: 12px 0 0; font-size: 24px; color: $accent; font-weight: 700; } }
+.caption { font-size: 11px; color: $muted; line-height: 1.8; margin: 12px 0; }
+.empty { border: 1px dashed #3a493b; border-radius: 8px; padding: 22px; color: $muted; font-size: 12px; line-height: 1.8; margin: 12px 0; }
+.tableScroll { overflow-x: auto; }
+.statsTable, .playersTable { width: 100%; border-collapse: collapse; font-size: 12px; th, td { padding: 14px 10px; border-bottom: 1px solid #2d3830; line-height: 1.5; } thead th { color: #bdccaf; font-size: 11px; font-weight: 600; } tbody th { color: $muted; font-weight: 400; } tbody tr:last-child > * { border-bottom: 0; } }
+.statsTable { table-layout: fixed; text-align: center; th:nth-child(2) { width: 42%; } td { font-weight: 700; font-variant-numeric: tabular-nums; color: $accent; } }
+.playersTable { min-width: 550px; text-align: center; th:first-child { text-align: left; } }
+.timeline { list-style: none; padding: 0; margin: 0; li { display: flex; align-items: flex-start; gap: 16px; padding: 18px 0; border-bottom: 1px solid #2c3830; &:last-child { border: 0; } } strong { font-size: 12px; } p { color: #d2dccd; font-size: 12px; line-height: 1.7; margin: 7px 0; span { color: $muted; } } small { color: $muted; font-size: 10px; } }
+.minute { width: 48px; flex-shrink: 0; color: $accent; font-size: 12px; padding-top: 4px; font-variant-numeric: tabular-nums; }
+.eventIcon { width: 32px; height: 32px; display: grid; place-items: center; flex-shrink: 0; color: $accent; background: #c1f45b0c; border-radius: 8px; font-size: 10px; svg { font-size: 20px; } }
+.lineups { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 32px; }
+.lineup { min-width: 0; h3 { display: flex; align-items: center; gap: 10px; line-height: 1.5; > span:last-child:not(:first-child) { margin-left: auto; color: $accent; font-size: 12px; white-space: nowrap; } } h4 { margin: 20px 0 12px; font-size: 11px; color: #c2d0b6; text-transform: uppercase; letter-spacing: 1px; } }
+.coach { color: $muted; font-size: 11px; line-height: 1.7; }
+.playerList { list-style: none; margin: 0; padding: 0; li { display: flex; align-items: center; gap: 10px; padding: 10px 0; border-bottom: 1px solid #2b352f; font-size: 12px; line-height: 1.5; } small { margin-left: auto; font-size: 9px; color: $muted; text-align: right; } }
+.shirt { display: inline-grid; place-items: center; width: 25px; height: 25px; flex-shrink: 0; border-radius: 5px; color: $accent; background: #c1f45b0b; font-size: 10px; }
+.substitutes { margin-top: 20px; summary { cursor: pointer; color: #c8d7bc; font-size: 12px; padding-block: 8px; } }
+.footer { margin-top: 30px; color: $muted; font-size: 10px; line-height: 1.8; a { color: $accent; } }
+.state { min-height: 50vh; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; padding: 36px 12px; > svg { font-size: 48px; color: $accent; } h1 { font-size: 24px; margin: 24px 0 12px; } p { color: $muted; line-height: 1.8; font-size: 13px; max-width: 450px; } }
+@media (max-width: 650px) { .main { padding: 20px 18px 28px; } .heading { margin: 22px 0; } .scoreboard { padding: 22px 14px; } .scoreRow { gap: 8px; grid-template-columns: minmax(0, 1fr) 90px minmax(0, 1fr); } .team { strong { font-size: 13px; } > span { width: 46px; height: 46px; img { width: 42px; height: 42px; } } } .panel { padding: 20px 16px; h2 { font-size: 17px; } } .lineups { grid-template-columns: 1fr; gap: 16px; } .timeline li { gap: 10px; } .minute { width: 36px; font-size: 11px; } .statsTable { font-size: 11px; th, td { padding: 12px 4px; } } .sections { gap: 20px; } }

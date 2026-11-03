@@ -1,0 +1,32 @@
+$accent: #c1f45b;
+$muted: #9da7aa;
+
+.header { position: relative; z-index: 10; border-bottom: 1px solid #2b3432; background: #141a1b; color: #f5f7f4; font-family: Arial, Helvetica, sans-serif; }
+.inner { min-height: 88px; max-width: 1280px; padding: 0 40px; margin: auto; display: flex; align-items: center; gap: 32px; }
+.inner .brand { flex-shrink: 0; }
+.tagline { padding-left: 30px; border-left: 1px solid #343c3a; color: $muted; font-size: 12px; }
+.actions { display: flex; align-items: center; gap: 12px; margin-left: auto; a { text-decoration: none; font-size: 12px; font-weight: 700; padding: 12px 20px; border-radius: 7px; transition: background 150ms; } }
+.login { border: 1px solid #46504a; color: #f5f7f4; &:hover { background: #242d29; } }
+.register { display: inline-flex; align-items: center; gap: 16px; background: $accent; color: #192212; svg { font-size: 17px; } &:hover { background: #d0ff76; } }
+.accountArea { margin-left: auto; display: flex; align-items: center; gap: 22px; min-width: 0; }
+.account { position: relative; padding-block: 14px; }
+.balance { display: flex; align-items: center; gap: 16px; padding: 10px 12px; border: 1px solid #3b483d; border-radius: 9px; background: #1c2522; > div { display: flex; flex-direction: column; gap: 5px; } span { color: $muted; font-size: 10px; } strong { color: $accent; font-size: 12px; white-space: nowrap; } a, button { display: grid; place-items: center; width: 27px; height: 27px; border: 0; border-radius: 6px; color: #182012; background: $accent; cursor: pointer; svg { font-size: 18px; } } }
+.accountTrigger { border: 0; background: transparent; display: flex; align-items: center; gap: 11px; color: #dfe6df; padding: 0; cursor: pointer; font: inherit; > svg { color: $muted; font-size: 19px; transition: transform 150ms; } }
+.avatar { display: grid; place-items: center; width: 40px; height: 40px; border: 1px solid #5c7047; border-radius: 50%; background: #c1f45b12; color: $accent; }
+.greeting { font-size: 12px; max-width: 160px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; strong { font-weight: 600; } }
+.chevronOpen { transform: rotate(180deg); }
+.dropdown { position: absolute; top: calc(100% - 1px); right: 0; min-width: 252px; max-width: min(320px, calc(100vw - 32px)); padding: 8px; background: #1c2522; border: 1px solid #3b483d; border-radius: 10px; box-shadow: 0 15px 40px #0005; button, a { width: 100%; display: flex; align-items: center; gap: 11px; border: 0; background: none; color: #e0e7e0; padding: 12px; border-radius: 6px; text-align: left; text-decoration: none; font: inherit; font-size: 12px; cursor: pointer; svg { font-size: 19px; color: $muted; } &:hover { background: #c1f45b0d; color: $accent; } &:disabled { cursor: wait; opacity: .6; } } }
+.identity { display: flex; flex-direction: column; gap: 6px; padding: 12px 12px 17px; border-bottom: 1px solid #344034; margin-bottom: 6px; overflow-wrap: anywhere; strong { font-size: 13px; } span { font-size: 11px; color: $muted; } }
+.divider { height: 1px; margin: 6px 8px; background: #344034; }
+.dropdown .logout { color: #ffada3; svg { color: inherit; } }
+.error { color: #ffada3; font-size: 11px; line-height: 1.6; padding: 0 12px; }
+.dialog { width: min(440px, calc(100vw - 32px)); max-height: 85svh; margin: auto; padding: 0; border: 1px solid #47553f; border-radius: 14px; background: #19221e; color: #f5f7f4; font-family: Arial, Helvetica, sans-serif; &::backdrop { background: #080d0bbb; backdrop-filter: blur(5px); } }
+.dialogContent { padding: 32px; position: relative; h2 { font-size: 23px; letter-spacing: -.7px; margin: 20px 0 12px; } p { font-size: 13px; line-height: 1.8; color: #aab7ac; } dl { margin: 24px 0; } dt { color: $muted; font-size: 11px; margin-top: 16px; } dd { margin: 6px 0 0; font-size: 14px; overflow-wrap: anywhere; } .panelNote { font-size: 11px; } }
+.close { position: absolute; right: 18px; top: 18px; border: 0; color: $muted; background: none; padding: 5px; cursor: pointer; }
+.panelIcon { display: grid; place-items: center; color: $accent; background: #c1f45b12; border-radius: 12px; width: 48px; height: 48px; }
+.header a:focus-visible, .header button:focus-visible, .dialog button:focus-visible { outline: 2px solid $accent; outline-offset: 4px; }
+@media (max-width: 900px) { .tagline { display: none; } }
+@media (max-width: 600px) { .inner { min-height: 76px; padding-inline: 20px; gap: 12px; } .inner .brand { font-size: 19px; gap: 8px; > span:first-child { width: 32px; height: 32px; svg { font-size: 23px; } } } .actions { gap: 8px; a { font-size: 11px; padding: 10px 12px; } } .register { gap: 6px; svg { display: none; } } .greeting { display: none; } .accountTrigger { gap: 5px; } }
+@media (max-width: 600px) { .accountArea { gap: 10px; } .balance { padding: 8px; gap: 8px; strong { font-size: 10px; } span { font-size: 9px; } } .dropdown { right: -100px; } }
+@media (max-width: 380px) { .inner { flex-wrap: wrap; padding-block: 12px; } .accountArea { flex: 1; justify-content: flex-end; } .balance { gap: 5px; } .avatar { width: 32px; height: 32px; } }
+@media (prefers-reduced-motion: reduce) { .header *, .dialog * { transition: none !important; } }

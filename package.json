@@ -1,0 +1,39 @@
+{
+  "name": "sistema-bet",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev --webpack",
+    "test": "vitest run",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint app components src lib --cache --ext .ts,.tsx,.js,.jsx"
+  },
+  "dependencies": {
+    "@emotion/cache": "^11.14.0",
+    "@emotion/react": "^11.14.0",
+    "@emotion/styled": "^11.14.1",
+    "@mui/icons-material": "^9.5.0",
+    "@mui/material": "^9.5.0",
+    "@mui/material-nextjs": "^9.5.0",
+    "@prisma/client": "^6.12.0",
+    "argon2": "^0.45.1",
+    "next": "^16.2.4",
+    "react": "19.2.4",
+    "react-dom": "19.2.4",
+    "sass": "^1.98.0",
+    "server-only": "^0.0.1"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4.2.2",
+    "@types/node": "^20",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "eslint": "^9",
+    "eslint-config-next": "16.2.1",
+    "prisma": "^6.12.0",
+    "tailwindcss": "^4.2.2",
+    "typescript": "^5",
+    "vitest": "^4.1.12"
+  }
+}

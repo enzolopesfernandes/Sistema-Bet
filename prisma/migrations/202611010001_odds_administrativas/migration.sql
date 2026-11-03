@@ -1,0 +1,1 @@
+ALTER TABLE `selecao` ADD COLUMN `odd_manual` BOOLEAN NOT NULL DEFAULT false;

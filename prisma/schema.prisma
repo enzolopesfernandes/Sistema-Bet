@@ -1,0 +1,366 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model aposta {
+  id                String        @id @db.Char(36)
+  usuario_id        String        @db.Char(36)
+  carteira_id       String        @db.Char(36)
+  valor             Decimal       @db.Decimal(18, 2)
+  odd_total         Decimal       @db.Decimal(18, 6)
+  retorno_potencial Decimal       @db.Decimal(18, 2)
+  status            aposta_status @default(PENDENTE)
+  idempotency_key   String        @unique(map: "uq_aposta_idempotencia") @db.Char(36)
+  criada_em         DateTime      @default(now())
+  liquidada_em      DateTime?
+  promocao_id       String?       @db.Char(36)
+  promocao_snapshot Json?
+  odd_solicitada    Decimal?      @db.Decimal(12, 4)
+
+  @@index([carteira_id, usuario_id], map: "idx_aposta_carteira_usuario")
+  @@index([status], map: "idx_aposta_status")
+  @@index([usuario_id, criada_em], map: "idx_aposta_usuario_data")
+}
+
+model auditoria_admin {
+  id               String   @id @db.Char(36)
+  admin_id         String   @db.Char(36)
+  acao             String   @db.VarChar(80)
+  entidade         String   @db.VarChar(80)
+  entidade_id      String?  @db.Char(36)
+  dados_anteriores Json?
+  dados_novos      Json?
+  motivo           String?  @db.VarChar(500)
+  endereco_ip      String?  @db.VarChar(45)
+  criado_em        DateTime @default(now())
+
+  @@index([admin_id, criado_em], map: "idx_auditoria_admin_criado")
+  @@index([entidade, entidade_id], map: "idx_auditoria_entidade")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model carteira {
+  id            String        @id @db.Char(36)
+  usuario_id    String        @db.Char(36)
+  tipo          carteira_tipo @default(NORMAL)
+  saldo_atual   Decimal       @default(0.00) @db.Decimal(18, 2)
+  versao        Int           @default(0) @db.UnsignedInt
+  criada_em     DateTime      @default(now())
+  atualizada_em DateTime      @default(now())
+
+  @@unique([id, usuario_id], map: "uq_carteira_id_usuario")
+  @@unique([usuario_id, tipo], map: "uq_carteira_usuario_tipo")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model historico_odds {
+  id           String   @id @db.Char(36)
+  selecao_id   String   @db.Char(36)
+  admin_id     String   @db.Char(36)
+  odd_anterior Decimal  @db.Decimal(12, 4)
+  odd_nova     Decimal  @db.Decimal(12, 4)
+  motivo       String?  @db.VarChar(500)
+  alterada_em  DateTime @default(now())
+
+  @@index([admin_id], map: "idx_historico_admin")
+  @@index([selecao_id, alterada_em], map: "idx_historico_selecao_data")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model item_aposta {
+  id               String                @id @db.Char(36)
+  aposta_id        String                @db.Char(36)
+  selecao_id       String                @db.Char(36)
+  odd_contratada   Decimal               @db.Decimal(12, 4)
+  jogo_snapshot    String                @db.VarChar(320)
+  mercado_snapshot String                @db.VarChar(120)
+  selecao_snapshot String                @db.VarChar(150)
+  resultado        item_aposta_resultado @default(PENDENTE)
+  liquidado_em     DateTime?
+
+  @@unique([aposta_id, selecao_id], map: "uq_item_aposta_selecao")
+  @@index([selecao_id, resultado], map: "idx_item_selecao_resultado")
+}
+
+model jogo {
+  id            String      @id @db.Char(36)
+  local_id      Int         @unique @default(autoincrement())
+  gerenciado    Boolean     @default(false)
+  removido_em   DateTime?
+  versao        Int         @default(0)
+  placar_mandante Int?
+  placar_visitante Int?
+  api_football_id Int?       @unique(map: "uq_jogo_api_football")
+  esporte       String      @db.VarChar(80)
+  campeonato    String      @db.VarChar(150)
+  mandante      String      @db.VarChar(150)
+  visitante     String      @db.VarChar(150)
+  inicio_em     DateTime
+  status        jogo_status @default(AGENDADO)
+  resultado     String?     @db.VarChar(150)
+  criado_em     DateTime    @default(now())
+  atualizado_em DateTime    @default(now())
+
+  @@index([esporte, campeonato], map: "idx_jogo_esporte_campeonato")
+  @@index([status, inicio_em], map: "idx_jogo_status_inicio")
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model mercado {
+  id        String         @id @db.Char(36)
+  jogo_id   String         @db.Char(36)
+  nome      String         @db.VarChar(120)
+  status    mercado_status @default(ABERTO)
+  criado_em DateTime       @default(now())
+
+  @@index([jogo_id], map: "idx_mercado_jogo")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model movimentacao {
+  id              String            @id @db.Char(36)
+  carteira_id     String            @db.Char(36)
+  aposta_id       String?           @db.Char(36)
+  uso_promocao_id String?           @db.Char(36)
+  admin_id        String?           @db.Char(36)
+  tipo            movimentacao_tipo
+  valor_assinado  Decimal           @db.Decimal(18, 2)
+  saldo_apos      Decimal           @db.Decimal(18, 2)
+  motivo          String?           @db.VarChar(500)
+  idempotency_key String            @unique(map: "uq_movimentacao_idempotencia") @db.Char(36)
+  criada_em       DateTime          @default(now())
+
+  @@index([admin_id], map: "idx_movimentacao_admin")
+  @@index([aposta_id], map: "idx_movimentacao_aposta")
+  @@index([carteira_id, criada_em], map: "idx_movimentacao_carteira_data")
+  @@index([uso_promocao_id], map: "idx_movimentacao_promocao")
+}
+
+model perfil_apostador {
+  usuario_id      String    @id @db.Char(36)
+  apelido         String?   @unique(map: "uq_perfil_apelido") @db.VarChar(60)
+  data_nascimento DateTime? @db.Date
+  criado_em       DateTime  @default(now())
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model promocao {
+  id                 String          @id @db.Char(36)
+  criado_por_id      String          @db.Char(36)
+  codigo             String?         @unique(map: "uq_promocao_codigo") @db.VarChar(60)
+  nome               String          @db.VarChar(150)
+  tipo               promocao_tipo
+  regras             Json?
+  valor_bonus        Decimal         @default(0.00) @db.Decimal(18, 2)
+  limite_usos        Int?            @db.UnsignedInt
+  limite_por_usuario Int             @default(1) @db.UnsignedInt
+  inicio_em          DateTime
+  fim_em             DateTime
+  status             promocao_status @default(ATIVA)
+  criada_em          DateTime        @default(now())
+  versao             Int             @default(0)
+  removida_em        DateTime?
+
+  @@index([criado_por_id], map: "idx_promocao_admin")
+  @@index([status, inicio_em, fim_em], map: "idx_promocao_status_periodo")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model selecao {
+  id            String            @id @db.Char(36)
+  mercado_id    String            @db.Char(36)
+  descricao     String            @db.VarChar(150)
+  odd_atual     Decimal           @db.Decimal(12, 4)
+  odd_manual    Boolean           @default(false)
+  status        selecao_status    @default(ABERTA)
+  resultado     selecao_resultado @default(PENDENTE)
+  atualizado_em DateTime          @default(now())
+
+  @@index([mercado_id], map: "idx_selecao_mercado")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model sessao {
+  id                   String    @id @db.Char(36)
+  usuario_id           String    @db.Char(36)
+  refresh_token_sha256 Bytes     @unique(map: "uq_sessao_refresh") @db.Binary(32)
+  endereco_ip          String?   @db.VarChar(45)
+  user_agent           String?   @db.VarChar(512)
+  criada_em            DateTime  @default(now())
+  ultima_atividade_em  DateTime  @default(now())
+  expira_em            DateTime
+  revogada_em          DateTime?
+
+  @@index([usuario_id, expira_em], map: "idx_sessao_usuario_expira")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model token_acesso {
+  id           String    @id @db.Char(36)
+  sessao_id    String    @db.Char(36)
+  token_sha256 Bytes     @unique(map: "uq_token_acesso_hash") @db.Binary(32)
+  criado_em    DateTime  @default(now())
+  expira_em    DateTime
+  revogado_em  DateTime?
+
+  @@index([sessao_id, expira_em], map: "idx_token_acesso_sessao")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model token_recuperacao {
+  id           String    @id @db.Char(36)
+  usuario_id   String    @db.Char(36)
+  token_sha256 Bytes     @unique(map: "uq_token_recuperacao_hash") @db.Binary(32)
+  criado_em    DateTime  @default(now())
+  expira_em    DateTime
+  utilizado_em DateTime?
+
+  @@index([usuario_id, expira_em], map: "idx_token_recuperacao_usuario")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model uso_promocao {
+  id              String   @id @db.Char(36)
+  promocao_id     String   @db.Char(36)
+  usuario_id      String   @db.Char(36)
+  aposta_id       String?  @db.Char(36)
+  bonus_creditado Decimal  @default(0.00) @db.Decimal(18, 2)
+  utilizado_em    DateTime @default(now())
+
+  @@index([aposta_id], map: "idx_uso_promocao_aposta")
+  @@index([promocao_id, usuario_id], map: "idx_uso_promocao_limites")
+  @@index([usuario_id, utilizado_em], map: "idx_uso_promocao_usuario")
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model usuario {
+  id                  String         @id @db.Char(36)
+  nome                String         @db.VarChar(120)
+  email               String         @unique(map: "uq_usuario_email") @db.VarChar(255)
+  senha_hash          String         @db.VarChar(255)
+  papel               usuario_papel  @default(APOSTADOR)
+  status              usuario_status @default(ATIVO)
+  email_verificado_em DateTime?
+  criado_em           DateTime       @default(now())
+  atualizado_em       DateTime       @default(now())
+  excluido_em         DateTime?
+
+  @@index([papel, status], map: "idx_usuario_papel_status")
+}
+
+enum carteira_tipo {
+  NORMAL
+  BONUS
+}
+
+enum mercado_status {
+  ABERTO
+  SUSPENSO
+  FECHADO
+}
+
+enum promocao_tipo {
+  BONUS_CREDITO
+  ODDS_BOOST
+}
+
+enum selecao_status {
+  ABERTA
+  SUSPENSA
+  FECHADA
+}
+
+enum usuario_papel {
+  APOSTADOR
+  ADMINISTRADOR
+}
+
+enum movimentacao_tipo {
+  CREDITO_INICIAL
+  RECARGA_SIMULADA
+  APOSTA
+  PREMIO
+  ESTORNO
+  BONUS
+  AJUSTE_ADMIN
+  SAQUE_SIMULADO
+  ESTORNO_SAQUE
+}
+
+model saque {
+  id              String       @id @db.Char(36)
+  usuario_id      String       @db.Char(36)
+  carteira_id     String       @db.Char(36)
+  valor           Decimal      @db.Decimal(18, 2)
+  metodo          String       @db.VarChar(60)
+  status          saque_status @default(PENDENTE)
+  idempotency_key String       @unique @db.Char(36)
+  admin_id        String?      @db.Char(36)
+  motivo          String?      @db.VarChar(500)
+  criado_em       DateTime     @default(now())
+  decidido_em     DateTime?
+
+  @@index([usuario_id, criado_em])
+  @@index([status, criado_em])
+}
+
+enum saque_status {
+  PENDENTE
+  APROVADO
+  RECUSADO
+}
+
+enum selecao_resultado {
+  PENDENTE
+  GANHOU
+  PERDEU
+  ANULADA
+}
+
+enum usuario_status {
+  ATIVO
+  SUSPENSO
+  BLOQUEADO
+}
+
+enum aposta_status {
+  PENDENTE
+  GANHA
+  PERDIDA
+  ANULADA
+}
+
+enum jogo_status {
+  AGENDADO
+  AO_VIVO
+  ENCERRADO
+  CANCELADO
+}
+
+enum item_aposta_resultado {
+  PENDENTE
+  GANHOU
+  PERDEU
+  ANULADA
+}
+
+enum promocao_status {
+  ATIVA
+  PAUSADA
+  ENCERRADA
+}
